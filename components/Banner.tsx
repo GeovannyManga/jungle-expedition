@@ -30,6 +30,7 @@ export default function Banner() {
           frameBorder="0"
           allow="autoplay; encrypted-media"
           allowFullScreen
+           loading="lazy"
           onLoad={() => setLoading(false)} // Oculta loader al cargar
         ></iframe>
       </div>
