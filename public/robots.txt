@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Evitar indexar rutas internas de Next.js
+Disallow: /_next/
+Disallow: /api/
+
+Disallow: /private/
+Disallow: /temp/
+
+# Tu sitemap principal
+Sitemap: https://tayronacamping.com/sitemap.xml
