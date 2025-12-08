@@ -5,7 +5,6 @@ Allow: /
 Disallow: /_next/
 Disallow: /api/
 
-# Evitar archivos temporales o privados (si existen)
 Disallow: /private/
 Disallow: /temp/
 
