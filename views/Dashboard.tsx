@@ -78,7 +78,7 @@ export default function Dashboard() {
               : "bg-gray-800 hover:bg-gray-700"
           }`}
         >
-          Crear Room
+          Editar Tours
         </button>
 
         <button
@@ -89,7 +89,7 @@ export default function Dashboard() {
               : "bg-gray-800 hover:bg-gray-700"
           }`}
         >
-          Editar Room
+          Editar Habitaciones
         </button>
       </aside>
 

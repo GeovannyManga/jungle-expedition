@@ -25,6 +25,7 @@ export default function RoomEdit() {
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
   const [search, setSearch] = useState<string>("");
   const [selected, setSelected] = useState<Room | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 LOADER
 
   useEffect(() => {
     fetch("/api/rooms")
@@ -32,7 +33,8 @@ export default function RoomEdit() {
       .then((data: Room[]) => {
         setRooms(data);
         setFilteredRooms(data);
-      });
+      })
+      .finally(() => setLoading(false)); // 👈 OCULTAR LOADER
   }, []);
 
   const handleSearch = (value: string) => {
@@ -63,9 +65,19 @@ export default function RoomEdit() {
     });
   };
 
+  // ⬇⬇⬇ LOADER SI ESTÁ CARGANDO
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="animate-spin h-16 w-16 rounded-full border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
+  }
+  // ⬆⬆⬆ LOADER
+
   return (
     <div className="w-full p-6">
-      <h1 className="text-2xl font-bold mb-4">Editar Rooms</h1>
+      <h1 className="text-2xl font-bold mb-4">Editar Habitaciones</h1>
 
       {/* LISTA Y BUSCADOR */}
       {!selected && (
@@ -145,7 +157,9 @@ export default function RoomEdit() {
           <textarea
             className="border p-3 rounded"
             value={selected.description.ubicacion}
-            onChange={(e) => handleDescriptionChange("ubicacion", e.target.value)}
+            onChange={(e) =>
+              handleDescriptionChange("ubicacion", e.target.value)
+            }
           />
 
           <textarea

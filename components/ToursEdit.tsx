@@ -17,6 +17,7 @@ export default function TourEdit() {
   const [filteredTours, setFilteredTours] = useState<Tour[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Tour | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 LOADER
 
   useEffect(() => {
     fetch("/api/tours")
@@ -24,7 +25,8 @@ export default function TourEdit() {
       .then((data: Tour[]) => {
         setTours(data);
         setFilteredTours(data);
-      });
+      })
+      .finally(() => setLoading(false)); // 👈 OCULTAR LOADER
   }, []);
 
   const handleSearch = (value: string) => {
@@ -36,6 +38,16 @@ export default function TourEdit() {
     );
     setFilteredTours(filtered);
   };
+
+  // ⬇⬇⬇ LOADER SI ESTÁ CARGANDO
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="animate-spin h-16 w-16 rounded-full border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
+  }
+  // ⬆⬆⬆ LOADER
 
   return (
     <div className="w-full p-6">
