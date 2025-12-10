@@ -27,7 +27,7 @@ export default function RoomEdit() {
   const [selected, setSelected] = useState<Room | null>(null);
 
   useEffect(() => {
-    fetch("http://192.168.18.239:3000/api/rooms")
+    fetch("https://6938f0670eca2100083725f6--friendly-phoenix-9a78c1.netlify.app//api/rooms")
       .then((res) => res.json())
       .then((data: Room[]) => {
         setRooms(data);
