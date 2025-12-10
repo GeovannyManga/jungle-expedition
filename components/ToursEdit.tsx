@@ -19,7 +19,7 @@ export default function TourEdit() {
   const [selected, setSelected] = useState<Tour | null>(null);
 
   useEffect(() => {
-    fetch("/api/tours")
+    fetch("/api/tour")
       .then((res) => res.json())
       .then((data: Tour[]) => {
         setTours(data);
