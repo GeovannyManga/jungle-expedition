@@ -7,17 +7,17 @@ const cards = [
   {
     title: 'Tours en la naturaleza',
     img: 'https://res.cloudinary.com/drpyfh8bw/image/upload/v1764543880/samples/Tubooking/WhatsApp_Image_2025-11-30_at_17.45.06_1_axoocx.jpg',
-    link: 'https://wa.me/573106011889?text=Hola,%20me%20interesan%20los%20tours%20en%20la%20naturaleza'
+    link: 'https://wa.me/573114174520?text=Hola,%20me%20interesan%20los%20tours%20en%20la%20naturaleza'
   },
   {
     title: 'Tours culturales e históricos',
     img: 'https://res.cloudinary.com/drpyfh8bw/image/upload/v1764543881/samples/Tubooking/WhatsApp_Image_2025-11-30_at_17.45.06_enfxaz.jpg',
-    link: 'https://wa.me/573106011889?text=Hola,%20quiero%20info%20sobre%20tours%20culturales%20e%20históricos'
+    link: 'https://wa.me/573114174520?text=Hola,%20quiero%20info%20sobre%20tours%20culturales%20e%20históricos'
   },
   {
     title: 'Experiencias acuáticas',
     img: 'https://res.cloudinary.com/drpyfh8bw/image/upload/v1764543880/samples/Tubooking/WhatsApp_Image_2025-11-30_at_17.45.03_hedaat.jpg',
-    link: 'https://wa.me/573106011889?text=Hola,%20quiero%20info%20sobre%20experiencias%20acuáticas'
+    link: 'https://wa.me/573114174520?text=Hola,%20quiero%20info%20sobre%20experiencias%20acuáticas'
   },
 ];
 
