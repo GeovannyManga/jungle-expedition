@@ -19,7 +19,7 @@ export default function TourEdit() {
   const [selected, setSelected] = useState<Tour | null>(null);
 
   useEffect(() => {
-    fetch("https://6938f0670eca2100083725f6--friendly-phoenix-9a78c1.netlify.app//api/tours")
+    fetch("/api/tours")
       .then((res) => res.json())
       .then((data: Tour[]) => {
         setTours(data);
