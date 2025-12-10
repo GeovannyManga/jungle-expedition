@@ -5,7 +5,7 @@ import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 
 const documents = [
-  { name: "Registro Nacional de Turismo (RNT)", file: "/rut.pdf" },
+  { name: "Registro Nacional de Turismo (RNT)", file: "/RNT.pdf" },
   { name: "Rol Único Tributario (RUT)", file: "/rut.pdf" },
 ];
 
