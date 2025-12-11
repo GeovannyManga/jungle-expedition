@@ -25,7 +25,7 @@ export default function RoomEdit() {
   const [filteredRooms, setFilteredRooms] = useState<Room[]>([]);
   const [search, setSearch] = useState<string>("");
   const [selected, setSelected] = useState<Room | null>(null);
-  const [loading, setLoading] = useState(true); // 👈 LOADER
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/rooms")
@@ -34,7 +34,7 @@ export default function RoomEdit() {
         setRooms(data);
         setFilteredRooms(data);
       })
-      .finally(() => setLoading(false)); // 👈 OCULTAR LOADER
+      .finally(() => setLoading(false));
   }, []);
 
   const handleSearch = (value: string) => {
@@ -65,7 +65,26 @@ export default function RoomEdit() {
     });
   };
 
-  // ⬇⬇⬇ LOADER SI ESTÁ CARGANDO
+  // ⭐ FUNCION PARA GUARDAR
+  const handleSave = async () => {
+    if (!selected) return;
+
+    const res = await fetch(`/api/rooms/${selected._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(selected),
+    });
+
+    if (!res.ok) {
+      alert("Error al guardar");
+      return;
+    }
+
+    alert("Habitación actualizada correctamente");
+    setSelected(null);
+  };
+
+  // LOADER
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -73,7 +92,6 @@ export default function RoomEdit() {
       </div>
     );
   }
-  // ⬆⬆⬆ LOADER
 
   return (
     <div className="w-full p-6">
@@ -107,7 +125,13 @@ export default function RoomEdit() {
 
       {/* FORMULARIO DE EDICIÓN */}
       {selected && (
-        <form className="bg-white p-6 rounded shadow-md mt-6 grid gap-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSave();
+          }}
+          className="bg-white p-6 rounded shadow-md mt-6 grid gap-4"
+        >
           <h2 className="text-xl font-semibold mb-2">
             Editando: {selected.title}
           </h2>
@@ -148,9 +172,7 @@ export default function RoomEdit() {
           <input
             className="border p-3 rounded"
             value={selected.img}
-            onChange={(e) =>
-              setSelected({ ...selected, img: e.target.value })
-            }
+            onChange={(e) => setSelected({ ...selected, img: e.target.value })}
           />
 
           {/* DESCRIPCIÓN */}
@@ -201,10 +223,10 @@ export default function RoomEdit() {
           </div>
 
           <button
-            type="button"
+            type="submit"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
-            Guardar cambios (sin lógica todavía)
+            Guardar cambios
           </button>
         </form>
       )}
