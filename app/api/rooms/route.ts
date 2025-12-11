@@ -19,27 +19,27 @@ export async function GET() {
 }
 
 
-
 export async function PUT(req: Request, { params }: any) {
   try {
     await conexion();
 
-    const { id } = params; // viene en string, está bien porque tu _id ES string
-    const body = await req.json();
+    const { id } = params;
+    const data = await req.json();
 
-    // Asegurar estructura correcta
+    // Asegurar estructura correcta para evitar errores de validación
     const updateData = {
-      title: body.title,
-      location: body.location,
-      price: body.price,
-      img: body.img,
-      bannerImage: body.bannerImage,
+      title: data.title,
+      location: data.location,
+      price: data.price,
+      img: data.img,
+      bannerImage: data.bannerImage,
       description: {
-        ubicacion: body.description?.ubicacion ?? "",
-        alojamiento: body.description?.alojamiento ?? "",
-        servicios: body.description?.servicios ?? "",
-        actividades: body.description?.actividades ?? "",
-        opiniones: body.description?.opiniones ?? [],
+        ubicacion: data.description?.ubicacion ?? "",
+        alojamiento: data.description?.alojamiento ?? "",
+        servicios: data.description?.servicios ?? "",
+        actividades: data.description?.actividades ?? "",
+        // ⭐ IMPORTANTE: siempre enviar un array válido
+        opiniones: data.description?.opiniones ?? [],
       },
     };
 
@@ -50,7 +50,7 @@ export async function PUT(req: Request, { params }: any) {
 
     if (!updated) {
       return NextResponse.json(
-        { error: "Habitación no encontrada" },
+        { error: "No se encontró la habitación" },
         { status: 404 }
       );
     }
