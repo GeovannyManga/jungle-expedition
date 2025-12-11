@@ -87,7 +87,7 @@ const TourCards = () => {
               </div>
 
               <a
-                href={`https://wa.me/573053401504?text=Hola!%20Estoy%20interesado%20en%20el%20tour:%20${encodeURIComponent(
+                href={`https://wa.me/573114174520?text=Hola!%20Estoy%20interesado%20en%20el%20tour:%20${encodeURIComponent(
                   tour.title
                 )}`}
                 target="_blank"

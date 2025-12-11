@@ -132,7 +132,7 @@ const selectedRoom: Room | undefined = room[0];
         </div>
         {/* Botón */}
        <a
-  href={`https://wa.me/573106011889?text=${encodeURIComponent(
+  href={`https://wa.me/573114174520?text=${encodeURIComponent(
     `Hola, quiero reservar una habitación dentro del establecimiento ${selectedRoom.title}`
   )}`}
   target="_blank"
