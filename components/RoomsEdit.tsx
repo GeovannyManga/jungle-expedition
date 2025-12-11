@@ -64,26 +64,53 @@ export default function RoomEdit() {
       description: { ...selected.description, [field]: value },
     });
   };
-
-  // ⭐ FUNCION PARA GUARDAR
-  const handleSave = async () => {
-    if (!selected) return;
-
- const res = await fetch(`/api/rooms/${selected._id}`, {
-  method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(selected),
-});
+  const reloadRooms = async () => {
+  const res = await fetch("/api/rooms");
+  const data = await res.json();
+  setRooms(data);
+  setFilteredRooms(data);
+};
 
 
-    if (!res.ok) {
-      alert("Error al guardar");
-      return;
-    }
+const handleSave = async () => {
+  if (!selected) return;
 
-    alert("Habitación actualizada correctamente");
-    setSelected(null);
+  const payload = {
+    _id: selected._id,
+    title: selected.title ?? "",
+    location: selected.location ?? "",
+    price: selected.price ?? 0,
+    img: selected.img ?? "",
+    bannerImage: selected.bannerImage ?? [],
+    description: {
+      ubicacion: selected.description?.ubicacion ?? "",
+      alojamiento: selected.description?.alojamiento ?? "",
+      servicios: selected.description?.servicios ?? "",
+      actividades: selected.description?.actividades ?? "",
+      opiniones: selected.description?.opiniones ?? [],
+    },
   };
+
+  const res = await fetch("/api/rooms", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    console.log(await res.json());
+    alert("Error al guardar");
+    return;
+  }
+
+  await reloadRooms();
+
+  alert("Habitación actualizada correctamente");
+  setSelected(null);
+};
+
 
   // LOADER
   if (loading) {
@@ -163,8 +190,8 @@ export default function RoomEdit() {
 
           <input
             className="border p-3 rounded"
-            type="number"
-            value={selected.price}
+            type="text"
+            defaultValue={selected.price}
             onChange={(e) =>
               setSelected({ ...selected, price: Number(e.target.value) })
             }

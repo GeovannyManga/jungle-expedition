@@ -29,6 +29,13 @@ export default function TourEdit() {
       .finally(() => setLoading(false)); // 👈 OCULTAR LOADER
   }, []);
 
+  const reloadTours = async () => {
+    const res = await fetch("/api/tours");
+    const data = await res.json();
+    setTours(data);
+    setFilteredTours(data);
+  };
+
   const handleSearch = (value: string) => {
     setSearch(value);
     const filtered = tours.filter(
@@ -37,6 +44,41 @@ export default function TourEdit() {
         t.price.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredTours(filtered);
+  };
+
+  const handleSave = async () => {
+    if (!selected) return;
+
+    const payload = {
+      _id: selected._id,
+      title: selected.title,
+      description: selected.description,
+      duration: selected.duration,
+      difficulty: selected.difficulty,
+      price: selected.price,
+      img: selected.img,
+    };
+
+    const res = await fetch("/api/tours", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      alert("Error al guardar");
+      return;
+    }
+
+    // ✔ Recargar tours para ver cambios actualizados desde BD
+    await reloadTours();
+
+    alert("Tour actualizado correctamente");
+
+    // ✔ Salir del modo edición y volver a la lista
+    setSelected(null);
   };
 
   // ⬇⬇⬇ LOADER SI ESTÁ CARGANDO
@@ -138,16 +180,15 @@ export default function TourEdit() {
           <input
             className="border p-3 rounded"
             value={selected.img}
-            onChange={(e) =>
-              setSelected({ ...selected, img: e.target.value })
-            }
+            onChange={(e) => setSelected({ ...selected, img: e.target.value })}
           />
 
           <button
             type="button"
+            onClick={handleSave}
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
-            Guardar cambios (sin lógica todavía)
+            Guardar cambios
           </button>
         </form>
       )}

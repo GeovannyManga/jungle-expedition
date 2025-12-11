@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { conexion } from "../ConnectDb";
 import {Room} from "../models/rooms.model";
+import mongoose from "mongoose";
 
 export async function GET() {
   try {
@@ -19,47 +20,42 @@ export async function GET() {
 }
 
 
-export async function PUT(req: Request, { params }: any) {
+
+export async function PUT(req: Request) {
   try {
     await conexion();
 
-    const { id } = params;
-    const data = await req.json();
+    const body = await req.json();
+    const { _id, ...rest } = body;
 
-    // Asegurar estructura correcta para evitar errores de validación
-    const updateData = {
-      title: data.title,
-      location: data.location,
-      price: data.price,
-      img: data.img,
-      bannerImage: data.bannerImage,
-      description: {
-        ubicacion: data.description?.ubicacion ?? "",
-        alojamiento: data.description?.alojamiento ?? "",
-        servicios: data.description?.servicios ?? "",
-        actividades: data.description?.actividades ?? "",
-        // ⭐ IMPORTANTE: siempre enviar un array válido
-        opiniones: data.description?.opiniones ?? [],
-      },
-    };
-
-    const updated = await Room.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!updated) {
+    if (!_id) {
       return NextResponse.json(
-        { error: "No se encontró la habitación" },
+        { error: "Falta el _id del room a actualizar" },
+        { status: 400 }
+      );
+    }
+
+    const updatedRoom = await Room.findByIdAndUpdate(
+      _id,
+      rest,
+      { new: true }
+    ).lean();
+
+    if (!updatedRoom) {
+      return NextResponse.json(
+        { error: "No se encontró la habitación con ese ID" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(updated);
-  } catch (error) {
-    console.error("Error PUT /rooms/:id:", error);
+    console.log("RESULTADO UPDATE:", updatedRoom);
+
+    return NextResponse.json(updatedRoom);
+  } catch (error: any) {
+    console.error("ERROR EN PUT /rooms:", error);
+
     return NextResponse.json(
-      { error: "Error al actualizar la habitación" },
+      { error: "Error interno del servidor", details: error.message },
       { status: 500 }
     );
   }

@@ -1,11 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 
-import { v4 as uuidv4 } from "uuid";
-
 const TourSchema = new Schema(
   {
-    _id: { type: String, default: uuidv4 },
-
     title: { type: String, required: true },
 
     description: { type: String, required: true },
@@ -23,4 +19,5 @@ const TourSchema = new Schema(
   }
 );
 
-export const Tour = mongoose.models.tour || mongoose.model("tour", TourSchema, "tour");
+export const Tour = mongoose.models.tour || 
+  mongoose.model("tour", TourSchema, "tour");

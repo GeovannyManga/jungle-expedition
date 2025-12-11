@@ -18,21 +18,22 @@ export async function GET() {
   }
 }
 
-
-export async function POST(req: Request) {
+export async function PUT(req: Request) {
   try {
     await conexion();
 
-    const body = await req.json(); // Datos enviados desde Thunder o frontend
+    const body = await req.json();
+    const { _id, ...rest } = body;
+    
+    const updatedTour = await Tour.findByIdAndUpdate(_id, rest, { new: true }).lean();
+    console.log(updatedTour, "sigue fallando el findbyidandupdate")
 
-    const newTour = await Tour.create(body);
+    if (!updatedTour) {
+      return NextResponse.json({ error: "No se encontró el tour" }, { status: 404 });
+    }
 
-    return NextResponse.json(newTour, { status: 201 });
-  } catch (error) {
-    console.error("Error POST /tours:", error);
-    return NextResponse.json(
-      { error: "Error al crear tour" },
-      { status: 500 }
-    );
+    return NextResponse.json(updatedTour);
+  } catch (e) {
+    return NextResponse.json({ error: "Error interno" }, { status: 500 });
   }
 }
