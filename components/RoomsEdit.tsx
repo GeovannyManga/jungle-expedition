@@ -69,11 +69,12 @@ export default function RoomEdit() {
   const handleSave = async () => {
     if (!selected) return;
 
-    const res = await fetch(`/api/rooms/${selected._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(selected),
-    });
+ const res = await fetch(`/api/rooms/${selected._id}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(selected),
+});
+
 
     if (!res.ok) {
       alert("Error al guardar");
