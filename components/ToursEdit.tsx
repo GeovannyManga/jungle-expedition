@@ -9,7 +9,7 @@ type Tour = {
   duration: string;
   difficulty: string;
   price: string;
-  img: string;
+  img: string; // 👈 una sola imagen
 };
 
 export default function TourEdit() {
@@ -17,7 +17,7 @@ export default function TourEdit() {
   const [filteredTours, setFilteredTours] = useState<Tour[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Tour | null>(null);
-  const [loading, setLoading] = useState(true); // 👈 LOADER
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/tours")
@@ -26,7 +26,7 @@ export default function TourEdit() {
         setTours(data);
         setFilteredTours(data);
       })
-      .finally(() => setLoading(false)); // 👈 OCULTAR LOADER
+      .finally(() => setLoading(false));
   }, []);
 
   const reloadTours = async () => {
@@ -49,22 +49,12 @@ export default function TourEdit() {
   const handleSave = async () => {
     if (!selected) return;
 
-    const payload = {
-      _id: selected._id,
-      title: selected.title,
-      description: selected.description,
-      duration: selected.duration,
-      difficulty: selected.difficulty,
-      price: selected.price,
-      img: selected.img,
-    };
-
     const res = await fetch("/api/tours", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(selected),
     });
 
     if (!res.ok) {
@@ -72,16 +62,11 @@ export default function TourEdit() {
       return;
     }
 
-    // ✔ Recargar tours para ver cambios actualizados desde BD
     await reloadTours();
-
     alert("Tour actualizado correctamente");
-
-    // ✔ Salir del modo edición y volver a la lista
     setSelected(null);
   };
 
-  // ⬇⬇⬇ LOADER SI ESTÁ CARGANDO
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -89,13 +74,12 @@ export default function TourEdit() {
       </div>
     );
   }
-  // ⬆⬆⬆ LOADER
 
   return (
     <div className="w-full p-6">
       <h1 className="text-2xl font-bold mb-4">Editar Tours</h1>
 
-      {/* LISTA + BUSCADOR */}
+      {/* LISTA Y BUSCADOR */}
       {!selected && (
         <>
           <input
@@ -115,6 +99,17 @@ export default function TourEdit() {
                 <h2 className="font-semibold text-lg">{tour.title}</h2>
                 <p className="text-sm text-gray-600">{tour.duration}</p>
                 <p className="text-sm font-bold mt-2">{tour.price}</p>
+
+                {/* FOTO + URL */}
+                <img
+                  src={tour.img}
+                  alt={tour.title}
+                  className="w-full h-32 object-cover rounded mt-3"
+                />
+
+                <p className="text-xs mt-2 break-all text-gray-500">
+                  {tour.img}
+                </p>
               </div>
             ))}
           </div>
@@ -136,7 +131,23 @@ export default function TourEdit() {
             ← Volver
           </button>
 
-          {/* CAMPOS */}
+          {/* IMAGEN + INPUT JUNTOS 👇 */}
+          <div className="flex gap-4 items-start border p-4 rounded">
+            <img
+              src={selected.img}
+              alt="Vista Previa"
+              className="w-40 h-28 object-cover rounded border shadow"
+            />
+
+            <input
+              className="border p-3 rounded w-full"
+              value={selected.img}
+              onChange={(e) =>
+                setSelected({ ...selected, img: e.target.value })
+              }
+            />
+          </div>
+
           <input
             className="border p-3 rounded"
             value={selected.title}
@@ -175,12 +186,6 @@ export default function TourEdit() {
             onChange={(e) =>
               setSelected({ ...selected, price: e.target.value })
             }
-          />
-
-          <input
-            className="border p-3 rounded"
-            value={selected.img}
-            onChange={(e) => setSelected({ ...selected, img: e.target.value })}
           />
 
           <button

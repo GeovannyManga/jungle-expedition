@@ -3,11 +3,12 @@ import Head from "next/head";
 import Image from 'next/image';
 import { useContext, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { RoomsContext } from '../../context/roomsContext';
+import RoomsContext from '../../context/roomsContext';
 import NavBar from "../../components/NavBar";
 import Footer from "../../components/Footer";
 
 interface RoomDescription {
+
   ubicacion: string;
   alojamiento: string;
   servicios: string;
@@ -16,7 +17,6 @@ interface RoomDescription {
 }
 
 interface Room {
-  id: number;
   title: string;
   location: string;
   price: number;
@@ -37,7 +37,7 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
         <title>Canonical Tag Example</title>
         <link
           rel="canonical"
-          href="https://bookingtayronapark.com/Eden%20Tayrona%20Park"
+          href="https://tayronacamping.com/Eden%20Tayrona%20Park"
           key="canonical"
         />
       </Head>

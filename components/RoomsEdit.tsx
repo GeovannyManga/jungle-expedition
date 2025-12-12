@@ -15,8 +15,8 @@ type Room = {
   title: string;
   location: string;
   price: number;
-  img: string;
-  bannerImage: string[];
+  img: string; // principal
+  bannerImage: string[]; // múltiples imágenes
   description: Description;
 };
 
@@ -54,6 +54,20 @@ export default function RoomEdit() {
     setSelected({ ...selected, bannerImage: updated });
   };
 
+  const handleAddBannerImage = () => {
+    if (!selected) return;
+    setSelected({
+      ...selected,
+      bannerImage: [...selected.bannerImage, ""],
+    });
+  };
+
+  const handleRemoveBannerImage = (index: number) => {
+    if (!selected) return;
+    const updated = selected.bannerImage.filter((_, i) => i !== index);
+    setSelected({ ...selected, bannerImage: updated });
+  };
+
   const handleDescriptionChange = (
     field: keyof Description,
     value: string
@@ -64,55 +78,51 @@ export default function RoomEdit() {
       description: { ...selected.description, [field]: value },
     });
   };
+
   const reloadRooms = async () => {
-  const res = await fetch("/api/rooms");
-  const data = await res.json();
-  setRooms(data);
-  setFilteredRooms(data);
-};
-
-
-const handleSave = async () => {
-  if (!selected) return;
-
-  const payload = {
-    _id: selected._id,
-    title: selected.title ?? "",
-    location: selected.location ?? "",
-    price: selected.price ?? 0,
-    img: selected.img ?? "",
-    bannerImage: selected.bannerImage ?? [],
-    description: {
-      ubicacion: selected.description?.ubicacion ?? "",
-      alojamiento: selected.description?.alojamiento ?? "",
-      servicios: selected.description?.servicios ?? "",
-      actividades: selected.description?.actividades ?? "",
-      opiniones: selected.description?.opiniones ?? [],
-    },
+    const res = await fetch("/api/rooms");
+    const data = await res.json();
+    setRooms(data);
+    setFilteredRooms(data);
   };
 
-  const res = await fetch("/api/rooms", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  const handleSave = async () => {
+    if (!selected) return;
 
-  if (!res.ok) {
-    console.log(await res.json());
-    alert("Error al guardar");
-    return;
-  }
+    const payload = {
+      _id: selected._id,
+      title: selected.title ?? "",
+      location: selected.location ?? "",
+      price: selected.price ?? 0,
+      img: selected.img ?? "",
+      bannerImage: selected.bannerImage ?? [],
+      description: {
+        ubicacion: selected.description?.ubicacion ?? "",
+        alojamiento: selected.description?.alojamiento ?? "",
+        servicios: selected.description?.servicios ?? "",
+        actividades: selected.description?.actividades ?? "",
+        opiniones: selected.description?.opiniones ?? [],
+      },
+    };
 
-  await reloadRooms();
+    const res = await fetch("/api/rooms", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  alert("Habitación actualizada correctamente");
-  setSelected(null);
-};
+    if (!res.ok) {
+      alert("Error al guardar");
+      return;
+    }
 
+    await reloadRooms();
+    alert("Habitación actualizada correctamente");
+    setSelected(null);
+  };
 
-  // LOADER
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
@@ -145,6 +155,12 @@ const handleSave = async () => {
                 <h2 className="font-semibold text-lg">{room.title}</h2>
                 <p className="text-sm text-gray-600">{room.location}</p>
                 <p className="text-sm font-bold mt-2">${room.price}</p>
+
+                <img
+                  src={room.img}
+                  className="w-full h-32 object-cover rounded mt-3"
+                />
+                <p className="text-xs mt-2 break-all">{room.img}</p>
               </div>
             ))}
           </div>
@@ -172,6 +188,7 @@ const handleSave = async () => {
             ← Volver
           </button>
 
+          {/* Título */}
           <input
             className="border p-3 rounded"
             value={selected.title}
@@ -180,6 +197,7 @@ const handleSave = async () => {
             }
           />
 
+          {/* Ubicación */}
           <input
             className="border p-3 rounded"
             value={selected.location}
@@ -188,20 +206,31 @@ const handleSave = async () => {
             }
           />
 
+          {/* Precio */}
           <input
             className="border p-3 rounded"
-            type="text"
-            defaultValue={selected.price}
+            type="number"
+            value={selected.price}
             onChange={(e) =>
               setSelected({ ...selected, price: Number(e.target.value) })
             }
           />
 
-          <input
-            className="border p-3 rounded"
-            value={selected.img}
-            onChange={(e) => setSelected({ ...selected, img: e.target.value })}
-          />
+          {/* IMAGEN PRINCIPAL */}
+          <div className="flex gap-4 items-start border p-4 rounded">
+            <img
+              src={selected.img}
+              className="w-40 h-28 object-cover rounded border shadow"
+            />
+
+            <input
+              className="border p-3 rounded w-full"
+              value={selected.img}
+              onChange={(e) =>
+                setSelected({ ...selected, img: e.target.value })
+              }
+            />
+          </div>
 
           {/* DESCRIPCIÓN */}
           <textarea
@@ -211,7 +240,6 @@ const handleSave = async () => {
               handleDescriptionChange("ubicacion", e.target.value)
             }
           />
-
           <textarea
             className="border p-3 rounded"
             value={selected.description.alojamiento}
@@ -219,7 +247,6 @@ const handleSave = async () => {
               handleDescriptionChange("alojamiento", e.target.value)
             }
           />
-
           <textarea
             className="border p-3 rounded"
             value={selected.description.servicios}
@@ -227,7 +254,6 @@ const handleSave = async () => {
               handleDescriptionChange("servicios", e.target.value)
             }
           />
-
           <textarea
             className="border p-3 rounded"
             value={selected.description.actividades}
@@ -240,16 +266,47 @@ const handleSave = async () => {
           <div>
             <h3 className="font-semibold mb-2">Banner Images</h3>
 
-            {selected.bannerImage.map((url, index) => (
-              <input
-                key={index}
-                className="border p-3 rounded mb-2 w-full"
-                value={url}
-                onChange={(e) => handleBannerChange(index, e.target.value)}
-              />
-            ))}
+            <div className="grid gap-4">
+              {selected.bannerImage.map((url, index) => (
+                <div
+                  key={index}
+                  className="flex gap-4 items-start border p-3 rounded"
+                >
+                  <img
+                    src={url}
+                    className="w-32 h-24 object-cover rounded border"
+                  />
+
+                  <input
+                    value={url}
+                    className="border p-3 rounded w-full"
+                    onChange={(e) =>
+                      handleBannerChange(index, e.target.value)
+                    }
+                  />
+
+                  <button
+                    type="button"
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    onClick={() => handleRemoveBannerImage(index)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+
+              {/* AÑADIR NUEVA IMAGEN */}
+              <button
+                type="button"
+                className="bg-blue-600 text-white px-3 py-2 rounded w-fit"
+                onClick={handleAddBannerImage}
+              >
+                + Añadir imagen
+              </button>
+            </div>
           </div>
 
+          {/* GUARDAR */}
           <button
             type="submit"
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"

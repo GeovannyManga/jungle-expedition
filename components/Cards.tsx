@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useContext, useState, useMemo } from 'react';
-import { RoomsContext } from '../context/roomsContext';
+import RoomsContext from '../context/roomsContext';
+
 
 export default function RoomCards() {
   const { rooms } = useContext(RoomsContext);
