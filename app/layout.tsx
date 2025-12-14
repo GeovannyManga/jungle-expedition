@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jungle Expedition",
+  title: "Tayrona Camping",
   description: "Una experiencia turistica ecologica dentro del parque tayrona.",
   
   
